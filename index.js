@@ -18,16 +18,19 @@ app.use(cors());
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({extended: false}));
 
-// Controllers
-app.use('/auth', expressJWT({
-  secret: process.env.JWT_SECRET,
-  getToken: function fromRequest(req){
+//Helper functions
+function fromRequest(req){
     if(req.body.headers.Authorization &&
       req.body.headers.Authorization.split(' ')[0] === 'Bearer'){
       return req.body.headers.Authorization.split(' ')[1];
     }
     return null;
   }
+
+// Controllers
+app.use('/auth', expressJWT({
+  secret: process.env.JWT_SECRET,
+  getToken: fromRequest
 }).unless({
   path: [
     { url: '/auth/login', methods: ['POST'] },
