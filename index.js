@@ -18,7 +18,8 @@ app.use(cors());
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({extended: false}));
 
-//Helper functions
+//Helper functions: this allows our server to parse incoming token from the client
+//this is middleware so it has access to the incoming request
 function fromRequest(req){
     if(req.body.headers.Authorization &&
       req.body.headers.Authorization.split(' ')[0] === 'Bearer'){
@@ -28,6 +29,9 @@ function fromRequest(req){
   }
 
 // Controllers
+//all auth routes are protected exept for POST to /auth/login and POST /auth/signup
+//remember to pass JWT_SECRT (it will break without it)
+//Note: the unless portion is only needed if you need exceptions
 app.use('/auth', expressJWT({
   secret: process.env.JWT_SECRET,
   getToken: fromRequest
@@ -38,6 +42,7 @@ app.use('/auth', expressJWT({
   ]
 }), require('./controllers/auth'));
 
+//wildcard route
 app.get('*', function(req, res, next) {
 	res.send({ message: 'Unknown Route' });
 });
