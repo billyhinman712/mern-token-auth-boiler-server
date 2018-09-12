@@ -47,4 +47,5 @@ app.get('*', function(req, res, next) {
 	res.send({ message: 'Unknown Route' });
 });
 
+//listen on specified port or default to 3000
 app.listen(process.env.PORT || 3000);
